@@ -1,0 +1,55 @@
+#server.port=8904
+#spring.application.name=api-gateway-service
+#
+## Eureka config
+#eureka.client.serviceUrl.defaultZone=${EUREKA_URI:http://localhost:8900/discovery-service/eureka}
+#eureka.instance.preferIpAddress=true
+#
+#spring.main.web-application-type=reactive
+#
+#spring.cloud.gateway.discovery.locator.enabled=true
+#spring.cloud.gateway.discovery.locator.lowerCaseServiceId=true
+#filters:
+#            - RewritePath=br/(?<segment>/?.*), users/$\{segment}
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: 'true'
+          lowerCaseServiceId: 'true'
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+        - id: book-service
+          uri: lb://book-service
+          predicates:
+            - Path=/books/**,/categories/**
+        - id: borrow-management-service
+          uri: lb://borrow-management-service
+          predicates:
+            - Path=/borrow-management/**
+            - Method=POST,GET
+  application:
+    name: api-gateway-service
+  main:
+    web-application-type: reactive
+eureka:
+  instance:
+    preferIpAddress: 'true'
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8900/discovery-service/eureka}
+server:
+  port: '8904'
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: '*'
+  server:
+    port: '8904'
