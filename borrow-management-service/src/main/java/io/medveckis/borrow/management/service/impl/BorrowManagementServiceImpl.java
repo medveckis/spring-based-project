@@ -52,7 +52,7 @@ public class BorrowManagementServiceImpl implements BorrowManagementService {
         bookRecord.setBookId(bookRecordData.getBook().getId());
         bookRecord.setUserId(bookRecordData.getUser().getId());
         bookRecord.setExpirationDate(DateTime.now().plusMonths(3).toDate());
-        bookRecord.setFee(loyaltyLevel == 1 ? bookFee - (bookFee * 0.1) : bookFee - (bookFee * 0.2));
+        bookRecord.setFee(loyaltyLevel == 0 ? bookFee : bookFee - (bookFee * 0.1 * loyaltyLevel));
         return bookRecord;
     }
 
